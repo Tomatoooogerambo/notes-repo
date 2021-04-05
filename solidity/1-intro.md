@@ -6,6 +6,10 @@
     - [address](#address)
     - [mapping](#mapping)
     - [event](#event)
+  - [特殊的全局变量](#特殊的全局变量)
+    - [msg](#msg)
+    - [tx](#tx)
+    - [block](#block)
   - [方法](#方法)
     - [function](#function)
     - [construct](#construct)
@@ -43,6 +47,11 @@ contract Coin {
 ### address
 ### mapping
 ### event
+
+## 特殊的全局变量
+### msg
+### tx
+### block
 
 ## 方法
 ### function
