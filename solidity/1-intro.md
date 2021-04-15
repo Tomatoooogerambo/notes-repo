@@ -14,7 +14,9 @@
     - [function](#function)
     - [construct](#construct)
   - [关键字](#关键字)
-    - [public](#public)
+    - [可见度](#可见度)
+    - [存储位置](#存储位置)
+    - [修饰符](#修饰符)
     - [emit](#emit)
 
 # Solidity简介
@@ -58,7 +60,7 @@ contract Coin {
 ### construct
 
 ## 关键字
-### public
+### 可见度
+### 存储位置
+### 修饰符
 ### emit
-
-
