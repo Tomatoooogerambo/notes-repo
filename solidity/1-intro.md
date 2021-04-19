@@ -4,6 +4,7 @@
 - [Solidity基本语法](#solidity基本语法)
   - [属性类型](#属性类型)
     - [address](#address)
+      - [问题1. 合约中的address(this) 和 msg.sender的区别](#问题1-合约中的addressthis-和-msgsender的区别)
     - [mapping](#mapping)
     - [event](#event)
   - [特殊的全局变量](#特殊的全局变量)
@@ -22,6 +23,7 @@
     - [存储位置](#存储位置)
     - [修饰符](#修饰符)
     - [emit](#emit)
+- [合约审计安全问题](#合约审计安全问题)
 
 # Solidity简介
 ## Solidity是什么？
@@ -52,6 +54,8 @@ contract Coin {
 
 ## 属性类型
 ### address
+#### 问题1. 合约中的address(this) 和 msg.sender的区别
+address(this)值得是一个合约部署之后的地址， msg.sender的地址是调用者的所在地址。
 ### mapping
 ### event
 
@@ -116,3 +120,5 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 ### 存储位置
 ### 修饰符
 ### emit
+
+# 合约审计安全问题
