@@ -20,9 +20,13 @@
     - [construct](#construct)
   - [关键字](#关键字)
     - [可见度 `visibility`](#可见度-visibility)
-    - [存储位置](#存储位置)
     - [修饰符](#修饰符)
     - [emit](#emit)
+- [EVM层](#evm层)
+  - [变量存储位置](#变量存储位置)
+    - [Stroage](#stroage)
+    - [Memory](#memory)
+    - [Stack](#stack)
 - [合约审计安全问题](#合约审计安全问题)
 
 # Solidity简介
@@ -61,27 +65,33 @@ address(this)值得是一个合约部署之后的地址， msg.sender的地址�
 
 ## 特殊的全局变量
 ### 二进制接口`abi`
-`abi`全称为 `Application Binary Interface`应用二进制接口，是合约和与以太坊生态系统交互的一套标准库.
+- `abi`全称为 `Application Binary Interface`应用二进制接口，是合约和与以太坊生态系统交互的一套标准库.
 
-`abi`中的主要方法是对传递的数据做编解码，所以`abi`中的数据大多数是:
+- `abi`中的主要方法是对传递的数据做编解码，所以`abi`中的数据大多数是:
 
-`abi.encodeXXXX()` `abi.decodeXXX()`
+- `abi.encodeXXXX()` `abi.decodeXXX()`
 ### 区块`block`
-`block`全局变量主要是链上区块的一些属性
+- `block`全局变量主要是链上区块的一些属性
+  
 - [ ] 后续完善block字段
 ### 消息`msg`
 消息和交易在以太坊中之前是一个比较容易混淆的概念。但实际上消息主要是合约与以太坊交互过程中的一个数据结构体。
 
 `msg`中常用的字段是：
 - `msg.sender (address payable)`这个是最常用的消息的发送者,或者说一个合约中函数的调用者。
+  
 - `msg.data (bytes)` 这个字段中包含完整的调用数据`call data`。
+  
 - `msg.value (uint)` 这个字段主要指发送者在消息中发送多少的以太币，1以`Wei`为单位
+  
 ### 交易`tx`
-`tx.gasprice (uint)`是指一笔交易中包含的gas
-`tx.origin (address payable)` 这笔交易的发送者地址
+- `tx.gasprice (uint)`是指一笔交易中包含的gas
+
+- `tx.origin (address payable)` 这笔交易的发送者地址
 ### 加密`ecc`
 ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发中是经常被使用到的，所以应该尽可能去熟悉这些方法。
 - `blockhash(uint blockNumber) returns (bytes32)` <br>对区块给出对应的hash值。但是需要注意的是，**目前的以太坊只支持最近出的256个区块的检索**。
+
 - `keccak256(bytes memory) returns (bytes32)` <br>这个是**最常见**的生成交易哈希txid的函数。
   
 - `sha256(bytes memory) returns (bytes32)` <br>基本的生成hash的函数。
@@ -89,6 +99,7 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 - `ripemd160(bytes memory) returns (bytes20)` <br>生成RIPEMD加密哈希的函数。
   
 - `ecrecover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) returns (address)` <br>该函数能够从椭圆曲线签名中获取公钥相联系的地址。
+  
 ### 地址类范型属性`<address>`
 - `balance`: 地址的余额。
 
@@ -98,10 +109,15 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 ### 类型`type`
 `type`主要是对合约的访问和操作中会使用到的全局变量。
 - `type(C).name (string)` 合约的名称。
+  
 - `type(C).creationCode (bytes memory)` 对合约创建字节码。
+  
 - `type(C).runtimeCode (bytes memory)` 创建合约运行时字节码。
+  
 - `type(I).interfaceId (bytes4)` 
+  
 - `type(T).min( T )`: 给定类型的最小值。
+  
 - `type(T).max( T )`: 给定类型的最大值。
 
 ## 方法
@@ -117,8 +133,19 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 - `external` 定义：近对外部可见，也就是说定义好的函数，需要被调用时，使用`this.funcxxx()`的方式。
   
 - `internal` 定义：仅内部可见
-### 存储位置
 ### 修饰符
 ### emit
+
+# EVM层
+## 变量存储位置
+### Stroage
+- `Storage`存储在每个账户均开辟的一个存储区域，这个区域中的数据能够一直存在于函数调用和交易之间，也就意味着在这个存储区域中存储的数据进行读写操作的成本比较高。<br>因此需要注意在使用创建这些变量时需要注意，越少使用这些storage的变量越好。
+  
+- 每一个合约`Contract`只能操作定义在合约内部的`Storage`， 任何非该合约内部的`Storage`变量都无法进行操作。
+  
+- [ ] `State Variable`和`Storage`的关系
+
+### Memory
+### Stack
 
 # 合约审计安全问题
