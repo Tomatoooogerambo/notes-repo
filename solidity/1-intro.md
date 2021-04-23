@@ -1,12 +1,11 @@
 - [Solidity简介](#solidity简介)
   - [Solidity是什么？](#solidity是什么)
-  - [Solidity的历史](#solidity的历史)
 - [Solidity基本语法](#solidity基本语法)
   - [属性类型](#属性类型)
-    - [address](#address)
-      - [问题1. 合约中的address(this) 和 msg.sender的区别](#问题1-合约中的addressthis-和-msgsender的区别)
-    - [mapping](#mapping)
-    - [event](#event)
+    - [`address`](#address)
+      - [问题1. 合约中的`address(this)` 和 `msg.sender`的区别](#问题1-合约中的addressthis-和-msgsender的区别)
+    - [`mapping`](#mapping)
+    - [`event`](#event)
   - [特殊的全局变量](#特殊的全局变量)
     - [二进制接口`abi`](#二进制接口abi)
     - [区块`block`](#区块block)
@@ -16,17 +15,18 @@
     - [地址类范型属性`<address>`](#地址类范型属性address)
     - [类型`type`](#类型type)
   - [方法](#方法)
-    - [function](#function)
-    - [construct](#construct)
+    - [`function`](#function)
+    - [`construct`](#construct)
+    - [`modifier`](#modifier)
   - [关键字](#关键字)
     - [可见度 `visibility`](#可见度-visibility)
     - [修饰符](#修饰符)
-    - [emit](#emit)
+    - [事件](#事件)
 - [EVM层](#evm层)
   - [变量存储位置](#变量存储位置)
-    - [Stroage](#stroage)
-    - [Memory](#memory)
-    - [Stack](#stack)
+    - [`Stroage`](#stroage)
+    - [`Memory`](#memory)
+    - [`Stack`](#stack)
   - [solidity汇编](#solidity汇编)
 - [合约审计安全问题](#合约审计安全问题)
   - [交易重铸](#交易重铸)
@@ -38,8 +38,7 @@
 # Solidity简介
 ## Solidity是什么？
 solidity其实是一个用于以太坊中编写智能合约的语言，其语法有点类似于javascript
-## Solidity的历史
-- [ ] 调查其开发历史
+
 # Solidity基本语法
 ```
 pragma solidity >=0.7.0 <0.9.0;
@@ -63,11 +62,11 @@ contract Coin {
 作为我个人的学习笔记，避免耗费重复的时间去塑造solidity的开发体系，在这里就直接进行知识的系统归纳和细节学习
 
 ## 属性类型
-### address
-#### 问题1. 合约中的address(this) 和 msg.sender的区别
+### `address`
+#### 问题1. 合约中的`address(this)` 和 `msg.sender`的区别
 address(this)值得是一个合约部署之后的地址， msg.sender的地址是调用者的所在地址。
-### mapping
-### event
+### `mapping`
+### `event`
 
 ## 特殊的全局变量
 ### 二进制接口`abi`
@@ -127,8 +126,9 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 - `type(T).max( T )`: 给定类型的最大值。
 
 ## 方法
-### function
-### construct
+### `function`
+### `construct`
+### `modifier`
 
 ## 关键字
 ### 可见度 `visibility`
@@ -136,23 +136,68 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
   
 - `private` 定义：当前的**合约**内可见。
   
-- `external` 定义：近对外部可见，也就是说定义好的函数，需要被调用时，使用`this.funcxxx()`的方式。
+- `external` 定义：仅对外部可见，也就是说定义好的函数，需要被调用时，使用`this.funcxxx()`的方式。
   
 - `internal` 定义：仅内部可见
 ### 修饰符
-### emit
+修饰符主要是对solidity中函数的访问变量的权限进行限制，或者是对状态变量本身的访问进行控制。
+
+- `pure` 不允许对状态变量的**修改** 或者**访问**
+  
+- `view` 不允许对状态变量的**修改**但是允许访问
+
+- `constant` 被`constant`修饰过的状态变量， 除了在初始化中赋值，其他任何操作都不能对该变量进行修改/重新分配内存/修改值。初始化完成直接存在编码中
+  
+- `immutable` 被该修饰符修饰过的状态变量，除了在`constructor`中被修改过后不会再允许被修改。之后存在字节编码中
+
+- `payable` 允许函数调用接受以太币
+
+- `virtual` 允许继承父累的合约中的函数和修饰器被重写,如果不显式表示出来，则派生合约不能够进行重写
+
+- `override` 在继承合约中声明所实现的方法是重写了某一父类中的某个方法，需要显式表示
+
+
+### 事件
+`Solidity`中的事件是以太坊虚拟机的**日志功能**的顶层抽象。应用想要获得相关日志信息，都需要事件通过以太坊客户端`RPC`调用来进行注册和监听。
+- `emit` 
+  - 事件就是通过`emit`关键字进行发送的
+  
+- `indexed` 
+  - `topics`不是日志`log`数据类型下的一种数据结构，它是一种特殊的数据结构，你可以使用`indexed`关键字将随事件的一些参数放在`topics`结构体中。
+  - 如果你不使用`indexed`这来进行修饰，那么这个数据结构将被“`abi-encoded`”到`log`数据结构体中。
+  - 需要注意，如果向`indexed`中的参数中传入数组一类的数据，那么就`topics`这一结构体中只会存储它的哈希值，因为它最大只能存32字节的数据。
+  - 例如签名的哈希值，签名的哈希值也是`topics`的一种
+  - 一个常见的输出例子如下，注意留意输出结果中的`topics`
+``` javascript
+{
+   "returnValues": {
+       "_from": "0x1111…FFFFCCCC",
+       "_id": "0x50…sd5adb20",
+       "_value": "0x420042"
+   },
+   "raw": {
+       "data": "0x7f…91385",
+       "topics": ["0xfd4…b4ead7", "0x7f…1a91385"]
+   }
+}
+```
+
+- `anonymous`
+  - 如果你将某个事件使用`anonymous`，那么这个事件在之后将不能直接通过指定事件的名称来获取返回结果，只能根据合约的地址进行查询信息。
+
+
 
 # EVM层
 ## 变量存储位置
-### Stroage
+### `Stroage`
 - `Storage`存储在每个账户均开辟的一个存储区域，这个区域中的数据能够一直存在于函数调用和交易之间，也就意味着在这个存储区域中存储的数据进行读写操作的成本比较高。<br>因此需要注意在使用创建这些变量时需要注意，越少使用这些storage的变量越好。
   
 - 每一个合约`Contract`只能操作定义在合约内部的`Storage`， 任何非该合约内部的`Storage`变量都无法进行操作。
   
 - [ ] `State Variable`和`Storage`的关系
 
-### Memory
-### Stack
+### `Memory`
+### `Stack`
 
 ## solidity汇编
 
