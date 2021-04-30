@@ -26,7 +26,7 @@
   - [变量存储位置](#变量存储位置)
     - [`Stroage`](#stroage)
     - [`Memory`](#memory)
-    - [`Stack`](#stack)
+    - [`Stack/Calldata`](#stackcalldata)
   - [solidity汇编](#solidity汇编)
 - [合约审计安全问题](#合约审计安全问题)
   - [交易重铸](#交易重铸)
@@ -66,6 +66,7 @@ contract Coin {
 #### 问题1. 合约中的`address(this)` 和 `msg.sender`的区别
 address(this)值得是一个合约部署之后的地址， msg.sender的地址是调用者的所在地址。
 ### `mapping`
+`map`**类型的变量是不可以作为函数的参数或者返回值的**，这一点需要特别注意
 ### `event`
 
 ## 特殊的全局变量
@@ -197,7 +198,7 @@ ecc中主要包含运算hash和运算签名方法，这些方法在dapp的开发
 - [ ] `State Variable`和`Storage`的关系
 
 ### `Memory`
-### `Stack`
+### `Stack/Calldata`
 
 ## solidity汇编
 
